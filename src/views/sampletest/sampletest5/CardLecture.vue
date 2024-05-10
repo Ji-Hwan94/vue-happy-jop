@@ -2,9 +2,9 @@
     <div class="col-sm-4">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title" style="text-align: center">강의실 이름</h5>
-                <p class="card-text">비고</p>
-                <a href="#" class="btn btn-info btn-sm" @click="$router.push('detail/1')">상세보기</a>
+                <h5 class="card-title" style="text-align: center">{{ data.lecrm_name }}</h5>
+                <p class="card-text">{{ data.lecrm_note }}</p>
+                <a class="btn btn-info btn-sm" @click="$router.push(`detail/${data.lecrm_id}`)">상세보기</a>
             </div>
         </div>
     </div>
@@ -13,6 +13,9 @@
 <script>
 export default {
     name: 'CardLecture',
+    props: {
+        data: Object,
+    },
 };
 </script>
 

@@ -3,7 +3,7 @@ import Login from '../views/Login.vue';
 import Dashboard from '../views/Dashboard.vue';
 import Notice from '../views/system/Notice';
 import SamplePage5 from '../views/sampletest/SamplePage5';
-import LectureDetail from '../views/sampletest/sampletest5/LectureDetail';
+import LectureHandle from '../views/sampletest/sampletest5/LectureHandle';
 
 const routes = [
     {
@@ -46,7 +46,11 @@ const routes = [
                     },
                     {
                         path: 'detail/:id',
-                        component: <LectureDetail />,
+                        component: <LectureHandle />,
+                    },
+                    {
+                        path: 'write',
+                        component: <LectureHandle />,
                     },
                 ],
             },
