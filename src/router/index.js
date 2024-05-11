@@ -2,8 +2,6 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 import Login from '../views/Login.vue';
 import Dashboard from '../views/Dashboard.vue';
 import Notice from '../views/system/Notice';
-import SamplePage5 from '../views/sampletest/SamplePage5';
-import LectureHandle from '../views/sampletest/sampletest5/LectureHandle';
 
 const routes = [
     {
@@ -34,23 +32,6 @@ const routes = [
                     {
                         path: 'notice',
                         component: <Notice />,
-                    },
-                ],
-            },
-            {
-                path: 'sampletest',
-                children: [
-                    {
-                        path: 'samplepage5',
-                        component: <SamplePage5 />,
-                    },
-                    {
-                        path: 'detail/:id',
-                        component: <LectureHandle />,
-                    },
-                    {
-                        path: 'write',
-                        component: <LectureHandle />,
                     },
                 ],
             },
