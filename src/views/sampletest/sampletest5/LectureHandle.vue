@@ -5,12 +5,16 @@
             <span class="btn_nav bold"> 강의실</span>
         </p>
         <p class="conTitle">
-            <span>강의실 상세조회</span>
+            <span v-if="id">강의실 상세조회</span>
+            <span v-else>강의실 신규등록</span>
+            <button class="btn btn-light" style="float: inline-end; margin-top: 10px" @click="$router.go(-1)">
+                돌아가기
+            </button>
         </p>
         <div>
             <div class="input-group mb-3">
                 <span class="input-group-text">강의실 명</span>
-                <input type="text" class="form-control" v-model="lecture.lecrm_name" :disabled="updateHandler" />
+                <input type="text" class="form-control" v-model="lecture.lecrm_name" />
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text">크기</span>
@@ -19,7 +23,6 @@
                     class="form-control"
                     oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')"
                     v-model="lecture.lecrm_size"
-                    :disabled="updateHandler"
                 />
                 <span class="input-group-text">자릿수</span>
                 <input
@@ -27,32 +30,24 @@
                     class="form-control"
                     oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')"
                     v-model="lecture.lecrm_snum"
-                    :disabled="updateHandler"
                 />
             </div>
             <div class="input-group mb-3">
                 <span class="input-group-text">비고</span>
-                <input type="text" class="form-control" v-model="lecture.lecrm_note" :disabled="updateHandler" />
+                <input type="text" class="form-control" v-model="lecture.lecrm_note" />
             </div>
         </div>
-        <div class="btn-family" style="padding-left: 80%">
-            <button class="btn btn-info" style="float: inline-end" @click="postLectureDetail" v-if="!id">
-                <span>등록</span>
+        <div class="btn-family">
+            <button class="btn btn-light" style="float: inline-end" v-if="id" @click="deleteLectureDetail">
+                <span>삭제</span>
             </button>
-            <span style="float: inline-end" v-else>
-                <button class="btn btn-info" @click="updateHandler = !updateHandler">
-                    <span>수정</span>
-                </button>
-                <button class="btn btn-light" style="margin-left: 5px">
-                    <span>삭제</span>
-                </button>
-            </span>
+            <button class="btn btn-info" style="float: inline-end" @click="postLectureDetail">
+                <span>저장</span>
+            </button>
         </div>
+
         <div>
             <EquipmentList v-if="id" />
-            <router-link to="/dashboard/sampletest/samplepage5">
-                <button class="btn btn-light" style="float: inline-end">돌아가기</button>
-            </router-link>
         </div>
     </div>
 </template>
@@ -61,13 +56,15 @@
 import axios from 'axios';
 import EquipmentList from './EquipmentList';
 import { onMounted, reactive, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import { nullcheck } from '@/common/common';
 
 const route = useRoute();
+const router = useRouter();
 const id = ref(route.params.id);
 const lecture = reactive({ lecrm_name: '', lecrm_size: 0, lecrm_snum: 0, lecrm_note: '' });
 let preLecture = Object;
-const updateHandler = ref(true);
+const updateHandler = ref(id.value ? 'U' : 'I');
 
 const getLectureDetail = (id) => {
     let params = new URLSearchParams();
@@ -87,7 +84,43 @@ const getLectureDetail = (id) => {
 };
 
 const postLectureDetail = () => {
-    console.log(lecture.value);
+    let checkresult = nullcheck([
+        { inval: lecture.lecrm_name, msg: '강의실 명을 입력해 주세요.' },
+        { inval: lecture.lecrm_size, msg: '강의실 크기을 입력해 주세요.' },
+        { inval: lecture.lecrm_snum, msg: '강의실 자리수을 입력해 주세요.' },
+    ]);
+    if (!checkresult) return;
+
+    let params = new URLSearchParams(lecture);
+    params.append('action', updateHandler.value);
+    params.append('lecrm_id', id.value);
+    axios
+        .post('/adm/lectureRoomSave.do', params)
+        .then((res) => {
+            if (res.data.result === 'S') {
+                alert('저장되었습니다.');
+                router.push('/dashboard/sampletest/samplepage5');
+            }
+        })
+        .catch((err) => {
+            alert(err.message);
+        });
+};
+
+const deleteLectureDetail = () => {
+    let params = new URLSearchParams();
+    params.append('lecrm_id', id.value);
+    axios
+        .post('/adm/lectureRoomDelete.do', params)
+        .then((res) => {
+            if (res.data.result === 'S') {
+                alert('삭제되었습니다.');
+                router.push('/dashboard/sampletest/samplepage5');
+            }
+        })
+        .catch((err) => {
+            alert(err.message);
+        });
 };
 
 watch(lecture, (newData) => {

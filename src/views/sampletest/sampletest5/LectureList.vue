@@ -10,7 +10,7 @@
                 <span>강의실 명 </span>
                 <input type="text" class="lecure-name" v-model="searchRoomName" />
                 <button class="btn btn-light btn-sm" @click="$router.push('write')">강의실 신규등록</button>
-                <button class="btn btn-secondary btn-sm">검색</button>
+                <button class="btn btn-secondary btn-sm" @click="searchLecture">검색</button>
             </span>
         </p>
         <div>
