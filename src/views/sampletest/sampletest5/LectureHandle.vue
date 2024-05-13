@@ -7,7 +7,7 @@
         <p class="conTitle">
             <span v-if="id">강의실 상세조회</span>
             <span v-else>강의실 신규등록</span>
-            <button class="btn btn-light" style="float: inline-end; margin-top: 10px" @click="$router.go(-1)">
+            <button class="btn btn-light" style="float: inline-end; margin-top: 10px" @click="router.back()">
                 돌아가기
             </button>
         </p>

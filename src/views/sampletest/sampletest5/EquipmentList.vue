@@ -8,7 +8,7 @@
                 </button>
             </p>
             <div style="float: left">
-                <b> 총건수 : {{ total }} 현재 페이지 번호 : 0 </b>
+                <b> 총건수 : {{ total }} 현재 페이지 번호 : {{ currentPage }} </b>
             </div>
 
             <table class="table table-info" style="margin-top: 1%">
@@ -45,6 +45,11 @@
                 </tbody>
             </table>
         </div>
+        <Pagination
+            v-show="dataList.length > 0"
+            v-bind="{ currentPage, totalItems: total, itemsPerPage: 5 }"
+            @search="getEquipmentList($event)"
+        />
         <ModalEquipment
             :equipId="equipId"
             :lectureId="lectureId"
@@ -60,6 +65,7 @@ import { useRoute } from 'vue-router';
 import ModalEquipment from './ModalEquipment';
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
+import Pagination from '@/components/common/PaginationComponent.vue';
 
 const route = useRoute();
 const lectureId = ref(route.params.id);
@@ -67,6 +73,7 @@ const dataList = ref([]);
 const total = ref(0);
 const equipId = ref(0);
 const modalBoolean = ref(false);
+const currentPage = ref(0);
 
 const getEquipmentList = (cpage) => {
     cpage = cpage || 1;
@@ -74,13 +81,13 @@ const getEquipmentList = (cpage) => {
     params.append('cpage', cpage);
     params.append('pagesize', 5);
     params.append('lecrm_id', lectureId.value);
-    // params.append('lecrm_id', 5);
 
     axios
         .post('/adm/equListjson.do', params)
         .then((res) => {
             dataList.value = res.data.listdata;
             total.value = res.data.listcnt;
+            currentPage.value = cpage;
         })
         .catch((err) => {
             alert(err.message);
