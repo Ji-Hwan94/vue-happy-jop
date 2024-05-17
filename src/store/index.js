@@ -1,28 +1,35 @@
-import { createStore } from 'vuex'
+import { createStore } from 'vuex';
+import createPersistedState from 'vuex-persistedstate';
 
-export default createStore({
-  state: {
-    counter: 1,
-    loginInfo:null,
-  },
-  getters: {
-    getCounter(state) {
-      return state.counter
+const store = createStore({
+    state() {
+        return {
+            counter: 1,
+            loginInfo: { loginId: '', userNm: '', userType: '', usrMnuAtrt: '' },
+        };
     },
-  },
-  mutations: {
-    increment(state) {
-      state.counter++
+    getters: {
+        getCounter(state) {
+            return state.counter;
+        },
+        getLoginInfo(state) {
+            return state.loginInfo;
+        },
     },
-    setLoginInfo(state, payload) {
-      state.loginInfo = payload
+    mutations: {
+        increment(state) {
+            state.counter++;
+        },
+        setLoginInfo(state, payload) {
+            state.loginInfo = payload;
+        },
+        setLogout(state) {
+            state.loginInfo = null;
+        },
     },
-    setLogout(state) {
-      state.loginInfo=null;
-    },
-  },
-  actions: {
-  },
-  modules: {
-  }
-})
+    actions: {},
+    modules: {},
+    plugins: [createPersistedState()],
+});
+
+export default store;

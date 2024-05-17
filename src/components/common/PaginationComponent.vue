@@ -1,12 +1,17 @@
 <template>
-    <nav aria-label="Page navigation example">
+    <nav aria-label="Page navigation example" style="z-index: 0">
         <ul class="pagination justify-content-center">
             <li class="page-item" v-if="currentPage > 1">
                 <a class="page-link" @click="previousPage">Previous</a>
             </li>
             <template v-for="i in totalPages" :key="i">
-                <li :class="currentPage == i ? 'page-item active' : 'page-item'">
-                    <a class="page-link" @click="clickedPage(i)">{{ i }}</a>
+                <li class="page-item">
+                    <a
+                        class="page-link"
+                        :style="currentPage == i ? { backgroundColor: 'deepskyblue' } : null"
+                        @click="clickedPage(i)"
+                        >{{ i }}</a
+                    >
                 </li>
             </template>
             <li class="page-item" v-if="currentPage != totalPages">
