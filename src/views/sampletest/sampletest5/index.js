@@ -1,5 +1,10 @@
 import axios from 'axios';
 
-export const axiosFun = (url, param) => {
-    return axios.post(url, param);
+export const axiosAction = async (url, param) => {
+    try {
+        const result = await axios.post(url, param);
+        return result.data;
+    } catch (error) {
+        return null;
+    }
 };

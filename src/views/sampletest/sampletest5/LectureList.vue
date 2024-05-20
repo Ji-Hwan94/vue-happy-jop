@@ -24,17 +24,18 @@
 </template>
 
 <script setup>
-import axios from 'axios';
 import CardLecture from './CardLecture.vue';
 import { onMounted, ref } from 'vue';
 import Pagination from '@/components/common/PaginationComponent.vue';
+import { axiosAction } from '.';
+import { SamplePage5 } from '@/api/api';
 
 const dataList = ref([]);
 const total = ref(0);
 const currentPage = ref(0);
 const searchRoomName = ref('');
 
-const searchLecture = (cpage) => {
+const searchLecture = async (cpage) => {
     cpage = cpage || 1;
 
     let params = new URLSearchParams();
@@ -42,16 +43,23 @@ const searchLecture = (cpage) => {
     params.append('pagesize', 6);
     params.append('searchRoomName', searchRoomName.value);
 
-    axios
-        .post('/adm/lectureRoomListjson.do', params)
-        .then((res) => {
-            dataList.value = res.data.listdata;
-            total.value = res.data.listcnt;
-            currentPage.value = cpage;
-        })
-        .catch((err) => {
-            alert(err.message);
-        });
+    const lectureList = await axiosAction(SamplePage5.LectureRoomList, params);
+    if (lectureList) {
+        dataList.value = lectureList.listdata;
+        total.value = lectureList.listcnt;
+        currentPage.value = cpage;
+    }
+
+    // axios
+    //     .post('/adm/lectureRoomListjson.do', params)
+    //     .then((res) => {
+    //         dataList.value = res.data.listdata;
+    //         total.value = res.data.listcnt;
+    //         currentPage.value = cpage;
+    //     })
+    //     .catch((err) => {
+    //         alert(err.message);
+    //     });
 };
 onMounted(() => {
     searchLecture();
